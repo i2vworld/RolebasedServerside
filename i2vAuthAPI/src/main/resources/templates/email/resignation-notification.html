@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resignation Submitted</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f9fafb;">
+<div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 8px 8px 0 0; text-align: center;">
+        <h1 style="margin: 0; font-size: 24px;">📋 Resignation Submitted</h1>
+        <p style="margin: 5px 0 0 0; opacity: 0.9;">Your resignation request has been received</p>
+    </div>
+
+    <!-- Body -->
+    <div style="background-color: white; padding: 30px; border-bottom: 1px solid #e5e7eb;">
+        <p>Dear <strong th:text="${name}">User</strong>,</p>
+
+        <p style="color: #666; margin: 20px 0;">Thank you for submitting your resignation. We have successfully received your resignation request. Below is a summary of the information provided:</p>
+
+        <!-- Resignation Details -->
+        <div style="background-color: #f3f4f6; padding: 20px; border-radius: 6px; margin: 20px 0;">
+            <h3 style="margin-top: 0; color: #374151;">Resignation Details</h3>
+            
+            <div style="margin: 15px 0;">
+                <p style="margin: 5px 0; color: #666;"><strong>Place:</strong></p>
+                <p style="margin: 5px 0 15px 0; padding-left: 10px; color: #374151;" th:text="${place}"></p>
+            </div>
+
+            <div style="margin: 15px 0;">
+                <p style="margin: 5px 0; color: #666;"><strong>Reason for Resignation:</strong></p>
+                <p style="margin: 5px 0 15px 0; padding-left: 10px; color: #374151;" th:text="${reason}"></p>
+            </div>
+
+            <div style="margin: 15px 0;">
+                <p style="margin: 5px 0; color: #666;"><strong>Last Working Date:</strong></p>
+                <p style="margin: 5px 0 15px 0; padding-left: 10px; color: #374151;" th:text="${lastWorkingDate}"></p>
+            </div>
+
+            <div th:if="${comments}" style="margin: 15px 0;">
+                <p style="margin: 5px 0; color: #666;"><strong>Additional Comments:</strong></p>
+                <p style="margin: 5px 0 15px 0; padding-left: 10px; color: #374151; font-style: italic;" th:text="${comments}"></p>
+            </div>
+
+            <div style="margin: 15px 0;">
+                <p style="margin: 5px 0; color: #666;"><strong>Submitted Date:</strong></p>
+                <p style="margin: 5px 0; padding-left: 10px; color: #374151;" th:text="${submittedDate}"></p>
+            </div>
+        </div>
+
+        <!-- Process Information -->
+        <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; border-radius: 4px;">
+            <h4 style="margin: 0 0 10px 0; color: #1e40af;">📌 What Happens Next?</h4>
+            <ul style="margin: 10px 0; padding-left: 20px; color: #374151;">
+                <li style="margin: 5px 0;">Your resignation has been forwarded to your manager for approval</li>
+                <li style="margin: 5px 0;">HR will review the request and initiate the clearance process</li>
+                <li style="margin: 5px 0;">You will receive updates on the status via email</li>
+                <li style="margin: 5px 0;">Upon completion of all clearances, you will receive your relieving letter</li>
+            </ul>
+        </div>
+
+        <!-- Call to Action -->
+        <div style="text-align: center; margin: 30px 0;">
+            <p style="color: #666; margin: 0;">You can view your resignation status by logging into the I2V Auth System</p>
+            <a href="#" th:href="${baseUrl + '/dashboard'}" style="display: inline-block; background-color: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; margin-top: 15px; font-weight: bold;">View Status</a>
+        </div>
+
+        <p style="color: #666; margin: 20px 0;">If you have any questions or need assistance, please contact the HR department.</p>
+    </div>
+
+    <!-- Footer -->
+    <div style="background-color: #f9fafb; padding: 20px; border-top: 1px solid #e5e7eb; border-radius: 0 0 8px 8px; text-align: center; font-size: 12px; color: #666;">
+        <p style="margin: 0;">This is an automated email. Please do not reply to this email.</p>
+        <p style="margin: 5px 0 0 0;">&copy; <span th:text="${year}">2024</span> I2V Consultants PVT LTD. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

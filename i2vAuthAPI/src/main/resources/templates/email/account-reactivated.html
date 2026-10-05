@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Reactivated</title>
+</head>
+<body style="font-family: Arial, sans-serif;">
+<div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #dcfce7; border-left: 4px solid #16a34a; padding: 15px; margin-bottom: 20px;">
+        <h2 style="color: #16a34a; margin: 0;">✅ Account Reactivated</h2>
+    </div>
+    <p>Dear <span th:text="${name}">User</span>,</p>
+    <p>Your account has been <strong style="color: #16a34a;">REACTIVATED</strong>.</p>
+    <p><strong>Reason:</strong> <span th:text="${reason}">Reason</span></p>
+    <p><strong>Date:</strong> <span th:text="${date}">Date</span></p>
+    <p>You can now <a th:href="${baseUrl} + '/login'" style="color: #16a34a;">login</a> to the system again.</p>
+    <hr style="margin: 20px 0;">
+    <p style="font-size: 12px; color: #666;">&copy; <span th:text="${year}">2024</span> I2V Auth System</p>
+</div>
+</body>
+</html>

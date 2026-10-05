@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Notification - I2V Auth System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 550px;
+            margin: 20px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        .header .category {
+            margin: 8px 0 0;
+            font-size: 13px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .content {
+            padding: 25px;
+        }
+        .priority-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+        .priority-high {
+            background-color: #fed7d7;
+            color: #c53030;
+        }
+        .priority-medium {
+            background-color: #feebc8;
+            color: #c05621;
+        }
+        .priority-low {
+            background-color: #c6f6d5;
+            color: #276749;
+        }
+        .action-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+            margin: 15px 0;
+        }
+        .footer {
+            background-color: #f7fafc;
+            padding: 15px;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1 th:text="${title}">Notification</h1>
+        <div class="category" th:text="${category}">SYSTEM</div>
+    </div>
+
+    <div class="content">
+            <span class="priority-badge"
+                  th:class="'priority-badge priority-' + ${priority.toLowerCase()}"
+                  th:text="${priority}">MEDIUM</span>
+
+        <div th:utext="${content}">
+            Notification content goes here...
+        </div>
+
+        <center>
+            <a th:if="${actionUrl != null}"
+               th:href="${actionUrl}"
+               class="action-button">
+                View Details →
+            </a>
+        </center>
+    </div>
+
+    <div class="footer">
+        <p th:text="'Sent at ' + ${#dates.format(#dates.createNow(), 'dd MMM yyyy, hh:mm a')}">Sent at 01 Jan 2024, 10:00 AM</p>
+        <p>© 2024 I2V Consulting. All rights reserved.</p>
+    </div>
+</div>
+</body>
+</html>

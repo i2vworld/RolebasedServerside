@@ -1,0 +1,3 @@
+-- Baseline: existing schema matches this version
+-- Future schema changes go here as new migration files (V2__, V3__, etc.)
+-- Example: ALTER TABLE table_name ALTER COLUMN column_name TYPE;

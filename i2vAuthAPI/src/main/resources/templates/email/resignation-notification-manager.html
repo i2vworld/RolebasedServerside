@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .greeting {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .notification {
+            background-color: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .notification p {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .notification p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .details-section {
+            margin: 30px 0;
+        }
+        
+        .details-section h3 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .detail-item {
+            display: flex;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 150px;
+            flex-shrink: 0;
+        }
+        
+        .detail-value {
+            color: #333;
+            word-break: break-word;
+        }
+        
+        .next-steps {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .next-steps h4 {
+            color: #856404;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+        
+        .next-steps ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .next-steps li {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .next-steps li:before {
+            content: "→";
+            position: absolute;
+            left: -15px;
+            color: #ffc107;
+            font-weight: bold;
+        }
+        
+        .action-button {
+            display: inline-block;
+            background-color: #667eea;
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .action-button:hover {
+            background-color: #5568d3;
+        }
+        
+        .footer {
+            background-color: #f9f9f9;
+            padding: 20px 30px;
+            text-align: center;
+            border-top: 1px solid #eee;
+        }
+        
+        .footer p {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .footer p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .contact-info {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+        }
+        
+        .contact-info a {
+            color: #667eea;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📋 Team Member Resignation Submitted</h1>
+            <p>Action Required - Please Review</p>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="greeting">
+                <p>Dear <strong th:text="${name}">Manager</strong>,</p>
+                <p>A resignation request has been submitted by <strong th:text="${employeeName}">Employee Name</strong>. Please review the details below and take necessary action.</p>
+            </div>
+            
+            <!-- Notification -->
+            <div class="notification">
+                <p><strong>Employee Resignation Notice</strong></p>
+                <p>An employee under your supervision has formally submitted their resignation. Please review the information and initiate the exit clearance process.</p>
+            </div>
+            
+            <!-- Resignation Details -->
+            <div class="details-section">
+                <h3>📝 Resignation Details</h3>
+                <div class="detail-item">
+                    <span class="detail-label">Employee Name:</span>
+                    <span class="detail-value" th:text="${employeeName}">Employee Name</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Place of Resignation:</span>
+                    <span class="detail-value" th:text="${place}">Place</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Reason for Resignation:</span>
+                    <span class="detail-value" th:text="${reason}">Reason</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Last Working Date:</span>
+                    <span class="detail-value" th:text="${lastWorkingDate}">Date</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Additional Comments:</span>
+                    <span class="detail-value" th:text="${comments}">Comments</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Submitted On:</span>
+                    <span class="detail-value" th:text="${submittedDate}">Date</span>
+                </div>
+            </div>
+            
+            <!-- Next Steps -->
+            <div class="next-steps">
+                <h4>⚠️ What Happens Next?</h4>
+                <ul>
+                    <li><strong>Manager Approval:</strong> Please review the resignation and approve/reject within 48 hours</li>
+                    <li><strong>HR Notification:</strong> HR department will be notified for clearance process</li>
+                    <li><strong>Exit Clearance:</strong> Employee must complete all exit formalities</li>
+                    <li><strong>Knowledge Transfer:</strong> Plan knowledge transfer with the departing employee</li>
+                    <li><strong>Final Settlement:</strong> HR will process final settlement and clearance</li>
+                </ul>
+            </div>
+            
+            <!-- CTA Button -->
+            <center>
+                <a href="#" class="action-button" th:href="|${baseUrl}/exit-management|">View Exit Requests Dashboard</a>
+            </center>
+            
+            <!-- Important Note -->
+            <div class="notification" style="background-color: #f8d7da; border-left-color: #dc3545; margin-top: 20px;">
+                <p style="color: #721c24;">
+                    <strong>Important:</strong> Please ensure timely processing of this resignation and coordinate with the employee for a smooth exit. For any concerns, contact the HR department.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>I2V Consulting</strong> - Integrated Human Resource Management System</p>
+            <p>&copy; <span th:text="${year}">2024</span> I2V Consulting. All rights reserved.</p>
+            <div class="contact-info">
+                <p>For queries, contact: <a href="mailto:hr@i2vconsulting.com">hr@i2vconsulting.com</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

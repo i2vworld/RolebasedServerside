@@ -1,0 +1,137 @@
+[
+  {
+    "name": "APP_BASE_URL",
+    "value": "https://dulcet-sopapillas-dd4785.netlify.app",
+    "slotSetting": false
+  },
+  {
+    "name": "CORS_ALLOWED_ORIGINS",
+    "value": "https://i2vworld-hzafgugwgwaag9gf.southindia-01.azurewebsites.net,http://localhost:3000,http://localhost:3001,http://localhost:5173,http://localhost:4000,https://dulcet-sopapillas-dd4785.netlify.app,https://i2v-adhyhgbnargpfegb.southindia-01.azurewebsites.net",
+    "slotSetting": false
+  },
+  {
+    "name": "DB_HOST",
+    "value": "i2v-sql-server.database.windows.net",
+    "slotSetting": false
+  },
+  {
+    "name": "DB_NAME",
+    "value": "i2v-db",
+    "slotSetting": false
+  },
+  {
+    "name": "DB_PASSWORD",
+    "value": "Node@12345",
+    "slotSetting": false
+  },
+  {
+    "name": "DB_PORT",
+    "value": "1433",
+    "slotSetting": false
+  },
+  {
+    "name": "DB_USERNAME",
+    "value": "kyc_user",
+    "slotSetting": false
+  },
+  {
+    "name": "HIBERNATE_DDL_AUTO",
+    "value": "update",
+    "slotSetting": false
+  },
+  {
+    "name": "JWT_EXPIRATION",
+    "value": "604800000",
+    "slotSetting": false
+  },
+  {
+    "name": "JWT_REFRESH_EXPIRATION",
+    "value": "86400000",
+    "slotSetting": false
+  },
+  {
+    "name": "JWT_SECRET",
+    "value": "dGhpcy1pcy1hLWRlZmF1bHQtand0LXNlY3JldC1mb3ItZGV2ZWxvcG1lbnQtb25seS1jaGFuZ2UtZm9yLXByb2R1Y3Rpb24tZW52aXJvbm1lbnQtdmFyaWFibGU=",
+    "slotSetting": false
+  },
+  {
+    "name": "MAIL_FROM",
+    "value": "i2v.consulting.helpdesk@gmail.com",
+    "slotSetting": false
+  },
+  {
+    "name": "MAIL_HOST",
+    "value": "smtp.gmail.com",
+    "slotSetting": false
+  },
+  {
+    "name": "MAIL_PASSWORD",
+    "value": "vqjqsblgpxinmyoh",
+    "slotSetting": false
+  },
+  {
+    "name": "MAIL_PORT",
+    "value": "587",
+    "slotSetting": false
+  },
+  {
+    "name": "MAIL_USERNAME",
+    "value": "i2v.consulting.helpdesk@gmail.com",
+    "slotSetting": false
+  },
+  {
+    "name": "RATE_LIMIT_AUTH_REQUESTS",
+    "value": "5",
+    "slotSetting": false
+  },
+  {
+    "name": "RATE_LIMIT_AUTH_WINDOW_MS",
+    "value": "60000",
+    "slotSetting": false
+  },
+  {
+    "name": "RATE_LIMIT_GENERAL_REQUESTS",
+    "value": "300",
+    "slotSetting": false
+  },
+  {
+    "name": "RATE_LIMIT_GENERAL_WINDOW_MS",
+    "value": "60000",
+    "slotSetting": false
+  },
+  {
+    "name": "SERVER_PORT",
+    "value": "8080",
+    "slotSetting": false
+  },
+  {
+    "name": "SPRING_JPA_HIBERNATE_DDL_AUTO",
+    "value": "update",
+    "slotSetting": false
+  },
+  {
+    "name": "SPRING_JPA_SHOW_SQL",
+    "value": "false",
+    "slotSetting": false
+  },
+  {
+    "name": "SPRING_JPA_OPEN_IN_VIEW",
+    "value": "false",
+    "slotSetting": false
+  },
+  {
+    "name": "SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT",
+    "value": "org.hibernate.dialect.SQLServerDialect",
+    "slotSetting": false
+  },
+  {
+    "name": "SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL",
+    "value": "true",
+    "slotSetting": false
+  },
+  {
+    "name": "SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_TIME_ZONE",
+    "value": "Asia/Kolkata",
+    "slotSetting": false
+  }
+]
