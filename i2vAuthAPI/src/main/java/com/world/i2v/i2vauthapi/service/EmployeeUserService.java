@@ -16,18 +16,22 @@ import com.world.i2v.i2vauthapi.dto.request.ProfileUpdateRequest;
 import com.world.i2v.i2vauthapi.dto.request.EmployeeJoinDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 @Transactional
 public class EmployeeUserService {
+
+    public static final String DEFAULT_JOIN_PASSWORD = "I2V@12345";
 
     private final EmployeeUserRepository employeeRepository;
     private final UserRepository userRepository;
@@ -44,6 +48,7 @@ public class EmployeeUserService {
     private final AuditService auditService;
     private final EmailService emailService;
     private final PermissionService permissionService;
+    private final PasswordEncoder passwordEncoder;
     private final ObjectMapper objectMapper;
 
 
@@ -59,9 +64,10 @@ public class EmployeeUserService {
                                SquadRepository squadRepository,
                                TerritoryRepository territoryRepository,
                                FotAccessLevelRepository fotAccessLevelRepository,
-                               AuditService auditService,
-                               EmailService emailService,
-                               PermissionService permissionService) {
+                                AuditService auditService,
+                                EmailService emailService,
+                                PermissionService permissionService,
+                                PasswordEncoder passwordEncoder) {
         this.employeeRepository = employeeRepository;
         this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
@@ -77,12 +83,20 @@ public class EmployeeUserService {
         this.auditService = auditService;
         this.emailService = emailService;
         this.permissionService = permissionService;
+        this.passwordEncoder = passwordEncoder;
         this.objectMapper = new ObjectMapper();
     }
 
     public EmployeeUserResponse createEmployeeFromJoin(EmployeeJoinDto dto) {
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        String generatedPassword = null;
+        User user;
+        if (dto.getUserId() != null) {
+            user = userRepository.findById(dto.getUserId())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        } else {
+            generatedPassword = DEFAULT_JOIN_PASSWORD;
+            user = provisionJoinUser(dto);
+        }
 
         if (user.getRole() != UserRole.EMPLOYEE) {
             user.setRole(UserRole.EMPLOYEE);
@@ -98,6 +112,10 @@ public class EmployeeUserService {
 
         Designation designation = designationRepository.findById(dto.getDesignationId())
                 .orElseThrow(() -> new ResourceNotFoundException("Designation not found"));
+
+        if (employeeRepository.existsByEmployeeCode(dto.getEmployeeCode())) {
+            throw new BadRequestException("Employee code already exists");
+        }
 
         EmployeeUser employee = new EmployeeUser();
         employee.setUser(user);
@@ -188,7 +206,42 @@ public class EmployeeUserService {
         auditService.logAction(null, "CREATE", "EMPLOYEE_JOIN", saved.getId(), saved.getEmployeeCode());
         permissionService.clearCacheForUser(user.getId());
 
-        return mapToResponse(saved);
+        EmployeeUserResponse response = mapToResponse(saved);
+        if (generatedPassword != null) {
+            response.setGeneratedPassword(generatedPassword);
+        }
+        return response;
+    }
+
+    private User provisionJoinUser(EmployeeJoinDto dto) {
+        String base = (dto.getWorkEmail() != null && !dto.getWorkEmail().isBlank())
+                ? dto.getWorkEmail().trim().toLowerCase()
+                : (dto.getEmployeeCode() != null && !dto.getEmployeeCode().isBlank()
+                    ? dto.getEmployeeCode().trim().toLowerCase().replaceAll("[^a-z0-9.@_-]", "") + "@i2vworld.com"
+                    : "user" + UUID.randomUUID().toString().substring(0, 8) + "@i2vworld.com");
+        String email = base;
+        int attempt = 0;
+        while (userRepository.existsByEmail(email) && attempt < 100) {
+            attempt++;
+            int at = base.indexOf('@');
+            email = at > 0 ? base.substring(0, at) + "-" + attempt + base.substring(at) : base + "-" + attempt;
+        }
+
+        String fullName = (dto.getFullName() != null && !dto.getFullName().isBlank())
+                ? dto.getFullName().trim()
+                : (dto.getEmployeeCode() != null ? dto.getEmployeeCode() : "Ground Ops User");
+
+        User user = new User();
+        user.setFullName(fullName);
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(DEFAULT_JOIN_PASSWORD));
+        user.setActive(true);
+        user.setEmailVerified(false);
+        user.setRole(UserRole.EMPLOYEE);
+
+        User saved = userRepository.save(user);
+        log.info("✅ [JOIN] Auto-provisioned auth user for ground ops migration: id={}, email={}", saved.getId(), saved.getEmail());
+        return saved;
     }
 
     public EmployeeUserResponse createEmployee(EmployeeUserRequest request) {

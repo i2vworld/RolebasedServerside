@@ -11,6 +11,7 @@ import java.util.List;
 public class EmployeeJoinDto {
     private Long userId;
     private String employeeCode;
+    private String fullName;
     private Long departmentId;
     private Long designationId;
 

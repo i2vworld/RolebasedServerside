@@ -191,6 +191,12 @@ public class AuthService {
         user.setLastLogin(LocalDateTime.now());
         userRepository.save(user);
 
+        boolean passwordResetRequired = passwordEncoder.matches(
+                EmployeeUserService.DEFAULT_JOIN_PASSWORD, user.getPassword());
+        if (passwordResetRequired) {
+            log.info("User {} is using the default temporary password - password reset required", user.getEmail());
+        }
+
         String accessToken = jwtUtil.generateToken(authentication);
         String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
 
@@ -220,6 +226,7 @@ public class AuthService {
                 .email(user.getEmail())
                 .fullName(user.getFullName())
                 .role(user.getRole().name())
+                .passwordResetRequired(passwordResetRequired)
                 .build();
     }
 
@@ -387,7 +394,8 @@ public class AuthService {
     }
 
     /**
-     * Change password for authenticated user
+     * Change password for the currently authenticated user.
+     * Verifies the current password before applying the new one.
      */
     public void changePassword(Long userId, String currentPassword, String newPassword) {
         User user = userRepository.findById(userId)
@@ -395,6 +403,14 @@ public class AuthService {
 
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new BadRequestException("Current password is incorrect");
+        }
+
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new BadRequestException("New password must be different from the current password");
+        }
+
+        if (EmployeeUserService.DEFAULT_JOIN_PASSWORD.equals(newPassword)) {
+            throw new BadRequestException("New password cannot be the default temporary password");
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));

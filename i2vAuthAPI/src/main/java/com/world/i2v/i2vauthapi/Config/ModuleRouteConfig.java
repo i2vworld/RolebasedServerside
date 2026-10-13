@@ -196,6 +196,10 @@ public class ModuleRouteConfig {
                 ? routePath.substring(API_PREFIX.length())
                 : routePath;
 
+        while (path.startsWith("/")) {
+            path = path.substring(1);
+        }
+
         int slash = path.indexOf('/');
         return slash == -1 ? path : path.substring(0, slash);
     }

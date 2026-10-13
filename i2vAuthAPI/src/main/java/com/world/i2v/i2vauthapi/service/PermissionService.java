@@ -43,7 +43,6 @@ public class PermissionService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "userPermissions", key = "#userId")
     public Map<String, Object> getUserPermissions(Long userId) {
         Map<String, Object> permissions = new HashMap<>();
         Map<String, Map<String, Object>> modulePermissions = new HashMap<>();

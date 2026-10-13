@@ -19,6 +19,7 @@ public class EmployeeUserResponse {
     private Long userId;
     private String userName;
     private String userEmail;
+    private String generatedPassword;
     private Boolean userActive;  // ✅ Add this field
     private Long departmentId;
     private String departmentName;

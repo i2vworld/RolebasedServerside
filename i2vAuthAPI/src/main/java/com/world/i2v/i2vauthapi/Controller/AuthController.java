@@ -4,6 +4,7 @@ import com.world.i2v.i2vauthapi.dto.request.*;
 import com.world.i2v.i2vauthapi.dto.response.ApiResponse;
 import com.world.i2v.i2vauthapi.dto.response.JwtResponse;
 import com.world.i2v.i2vauthapi.exception.BadRequestException;
+import com.world.i2v.i2vauthapi.exception.UnauthorizedException;
 import com.world.i2v.i2vauthapi.security.UserDetailsImpl;
 import com.world.i2v.i2vauthapi.service.AuthService;
 import com.world.i2v.i2vauthapi.service.SessionService;
@@ -71,6 +72,20 @@ public class AuthController {
     public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         authService.resetPassword(request);
         return ResponseEntity.ok(ApiResponse.success("Password reset successfully", null));
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<Void>> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        if (currentUser == null) {
+            throw new UnauthorizedException("Authentication required");
+        }
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new BadRequestException("Passwords do not match");
+        }
+        authService.changePassword(currentUser.getId(), request.getOldPassword(), request.getNewPassword());
+        return ResponseEntity.ok(ApiResponse.success("Password updated successfully", null));
     }
 
     // ==================== SESSION MANAGEMENT ====================

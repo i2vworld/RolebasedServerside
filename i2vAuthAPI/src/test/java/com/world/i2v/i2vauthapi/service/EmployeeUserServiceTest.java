@@ -10,6 +10,7 @@ import com.world.i2v.i2vauthapi.exception.ResourceNotFoundException;
 import com.world.i2v.i2vauthapi.repository.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +40,7 @@ class EmployeeUserServiceTest {
     private AuditService auditService;
     private EmailService emailService;
     private PermissionService permissionService;
+    private PasswordEncoder passwordEncoder;
 
     private EmployeeUserService employeeUserService;
 
@@ -59,12 +61,14 @@ class EmployeeUserServiceTest {
         auditService = mock(AuditService.class);
         emailService = mock(EmailService.class);
         permissionService = mock(PermissionService.class);
+        passwordEncoder = mock(PasswordEncoder.class);
+        when(passwordEncoder.encode(anyString())).thenReturn("encoded-password");
 
         employeeUserService = new EmployeeUserService(
                 employeeRepository, userRepository, departmentRepository, designationRepository,
                 sessionRepository, attendanceRepository, leaveRequestRepository, exitRequestRepository,
                 unitRepository, squadRepository, territoryRepository, fotAccessLevelRepository,
-                auditService, emailService, permissionService);
+                auditService, emailService, permissionService, passwordEncoder);
 
         // save() calls generally just return the given argument
         when(employeeRepository.save(any(EmployeeUser.class))).thenAnswer(inv -> inv.getArgument(0));

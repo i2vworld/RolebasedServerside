@@ -68,6 +68,7 @@ public class SecurityUtils {
 
     public boolean canManageUsers() {
         return hasModulePermission("USERS", "admin") ||
+                hasModulePermission("USER_MGMT", "admin") ||
                 hasGroupPermission("users", "admin");
     }
 

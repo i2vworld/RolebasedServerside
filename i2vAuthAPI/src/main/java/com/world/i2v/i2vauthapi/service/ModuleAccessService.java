@@ -131,7 +131,6 @@ public class ModuleAccessService {
         return permissionService.getUserPermissions(userId);
     }
 
-    @Cacheable(value = "userPermissions", key = "#userId")
     public Map<String, Object> getUserPermissionsCached(Long userId) {
         return permissionService.getUserPermissions(userId);
     }

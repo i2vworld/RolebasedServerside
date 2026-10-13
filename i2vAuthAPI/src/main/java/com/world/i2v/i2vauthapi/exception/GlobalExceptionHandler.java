@@ -88,8 +88,15 @@ public class GlobalExceptionHandler {
         errorDetails.put("message", ex.getMessage());
         errorDetails.put("path", request.getDescription(false));
 
+        String rootMessage = ex.getMessage();
+        Throwable root = ex;
+        while (root.getCause() != null && root.getCause() != root) {
+            root = root.getCause();
+            rootMessage = root.getMessage();
+        }
+
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ApiResponse.error("An unexpected error occurred"));
+                .body(ApiResponse.error(rootMessage != null ? rootMessage : "An unexpected error occurred"));
     }
 }
