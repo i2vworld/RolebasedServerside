@@ -1,11 +1,14 @@
 package com.world.i2v.i2vauthapi.Controller;
 
+import com.world.i2v.i2vauthapi.dto.request.AttendanceCorrectionRequest;
 import com.world.i2v.i2vauthapi.dto.response.ApiResponse;
 import com.world.i2v.i2vauthapi.entity.Attendance;
 import com.world.i2v.i2vauthapi.security.UserDetailsImpl;
 import com.world.i2v.i2vauthapi.service.AttendanceService;
+import com.world.i2v.i2vauthapi.service.AttendanceCorrectionService;
 import com.world.i2v.i2vauthapi.util.RequestUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,6 +36,7 @@ public class AttendanceController {
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final AttendanceService attendanceService;
+    private final AttendanceCorrectionService attendanceCorrectionService;
 
     @PostMapping("/check-in")
     @PreAuthorize("isAuthenticated()")
@@ -145,6 +149,32 @@ public class AttendanceController {
         }
     }
 
+    @PostMapping("/corrections")
+    @PreAuthorize("isAuthenticated() and @securityUtils.canReadAttendance()")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> submitCorrection(
+            @AuthenticationPrincipal UserDetailsImpl currentUser,
+            @Valid @RequestBody AttendanceCorrectionRequest correctionRequest) {
+        try {
+            Map<String, Object> result = attendanceCorrectionService.submit(currentUser.getId(), correctionRequest);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.success("Attendance correction submitted for review", result));
+        } catch (Exception e) {
+            log.error("Error submitting attendance correction: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/corrections/my")
+    @PreAuthorize("isAuthenticated() and @securityUtils.canReadAttendance()")
+    public ResponseEntity<ApiResponse<java.util.List<Map<String, Object>>>> getMyCorrections(
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        try {
+            return ResponseEntity.ok(ApiResponse.success(attendanceCorrectionService.getMyRequests(currentUser.getId())));
+        } catch (Exception e) {
+            log.error("Error getting attendance correction requests: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
     // ==================== HELPERS ====================
 
     private Map<String, Object> toAttendanceMap(Attendance attendance) {

@@ -126,6 +126,17 @@ public class CompanySettingsService {
         return Integer.parseInt(value);
     }
 
+    public int getAttendanceCorrectionCutoffDay() {
+        String value = getSetting("ATTENDANCE_CORRECTION_CUTOFF_DAY");
+        if (value == null) value = getSetting("ATTENDANCE_CORRECTION_WINDOW_DAYS", "25");
+        try {
+            int days = Integer.parseInt(value.trim());
+            return days >= 1 && days <= 31 ? days : 25;
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid attendance correction cutoff day '{}'; using day 25", value);
+            return 25;
+        }
+    }
     public List<String> getWeeklyOffDays(Long departmentId) {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Kolkata"));
 
@@ -200,6 +211,7 @@ public class CompanySettingsService {
     public CompanySettings saveSetting(String key, String value, String description) {
         log.info("Saving setting: {} = {}", key, value);
         validateTimeSetting(key, value);
+        validateAttendanceCorrectionCutoffDay(key, value);
 
         CompanySettings setting = settingsRepository.findBySettingKey(key)
                 .orElse(new CompanySettings());
@@ -221,6 +233,19 @@ public class CompanySettingsService {
         if (value == null || value.isEmpty()) return;
         if ("LATE_THRESHOLD".equals(key) || "OFFICIAL_START_TIME".equals(key) || "OFFICIAL_END_TIME".equals(key)) {
             parseSafeTime(key, value);
+        }
+    }
+
+    private void validateAttendanceCorrectionCutoffDay(String key, String value) {
+        if (!"ATTENDANCE_CORRECTION_CUTOFF_DAY".equals(key)
+                && !"ATTENDANCE_CORRECTION_WINDOW_DAYS".equals(key)) return;
+        try {
+            int days = Integer.parseInt(value.trim());
+            if (days < 1 || days > 31) {
+                throw new IllegalArgumentException("Attendance correction cutoff day must be between 1 and 31");
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Attendance correction cutoff day must be a whole number from 1 to 31", e);
         }
     }
 }

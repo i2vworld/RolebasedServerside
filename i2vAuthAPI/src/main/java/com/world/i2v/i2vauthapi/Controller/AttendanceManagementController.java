@@ -6,6 +6,8 @@ import com.world.i2v.i2vauthapi.dto.response.AttendanceResponse;
 import com.world.i2v.i2vauthapi.dto.response.AttendanceStatisticsResponse;
 import com.world.i2v.i2vauthapi.dto.response.AttendanceSummaryResponse;
 import com.world.i2v.i2vauthapi.service.AttendanceManagementService;
+import com.world.i2v.i2vauthapi.service.AttendanceCorrectionService;
+import com.world.i2v.i2vauthapi.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -29,6 +32,7 @@ import java.util.Map;
 public class AttendanceManagementController {
 
     private final AttendanceManagementService attendanceManagementService;
+    private final AttendanceCorrectionService attendanceCorrectionService;
 
     @GetMapping("/employees")
     @PreAuthorize("hasRole('EMPLOYEE') and @securityUtils.canManageAttendance()")
@@ -186,6 +190,46 @@ public class AttendanceManagementController {
         }
     }
 
+    @GetMapping("/corrections/pending")
+    @PreAuthorize("hasRole('EMPLOYEE') and @securityUtils.canManageAttendance()")
+    public ResponseEntity<ApiResponse<List<Map<String, Object>>>> getPendingCorrectionRequests() {
+        try {
+            return ResponseEntity.ok(ApiResponse.success(attendanceCorrectionService.getPendingRequests()));
+        } catch (Exception e) {
+            log.error("Error getting pending attendance corrections: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @PutMapping("/corrections/{requestId}/approve")
+    @PreAuthorize("hasRole('EMPLOYEE') and @securityUtils.canManageAttendance()")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> approveCorrectionRequest(
+            @PathVariable Long requestId,
+            @AuthenticationPrincipal UserDetailsImpl currentUser,
+            @RequestParam(required = false) String remarks) {
+        try {
+            Map<String, Object> result = attendanceCorrectionService.approve(requestId, currentUser.getId(), remarks);
+            return ResponseEntity.ok(ApiResponse.success("Attendance correction approved", result));
+        } catch (Exception e) {
+            log.error("Error approving attendance correction {}: {}", requestId, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @PutMapping("/corrections/{requestId}/reject")
+    @PreAuthorize("hasRole('EMPLOYEE') and @securityUtils.canManageAttendance()")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> rejectCorrectionRequest(
+            @PathVariable Long requestId,
+            @AuthenticationPrincipal UserDetailsImpl currentUser,
+            @RequestParam(required = false) String remarks) {
+        try {
+            Map<String, Object> result = attendanceCorrectionService.reject(requestId, currentUser.getId(), remarks);
+            return ResponseEntity.ok(ApiResponse.success("Attendance correction rejected", result));
+        } catch (Exception e) {
+            log.error("Error rejecting attendance correction {}: {}", requestId, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.error(e.getMessage()));
+        }
+    }
     // ==================== HELPERS ====================
 
     @SuppressWarnings("unchecked")
